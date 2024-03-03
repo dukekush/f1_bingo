@@ -28,9 +28,16 @@ To use this script, follow these steps:
 
 ## Customization
 
-You can customize the bingo sheet by modifying the script. The events or scenarios can be changed to match your preferences or specific F1 season.
+You can customize the bingo sheet by modifying the script or arguments. The events or scenarios can be changed to match your preferences or specific F1 season.
 
 - add or delete events in `events.txt` file
+- create WDC bingo for races wins:
+    ```
+    python bingo.py \
+        --name your_bingo_sheet_name \
+        --size your_bingo_sheet_size \
+        --wdc
+    ```
 
 ## Contributing
 

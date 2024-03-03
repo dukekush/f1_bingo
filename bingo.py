@@ -34,7 +34,7 @@ def adjust_event_image(image_path, box_size, blur_radius=0, brightness_factor=1)
     return event_image
 
 
-def create_bingo_image(bingo_sheet, box_size=100, text_size=None, line_spacing=10, box_spacing=10):
+def create_bingo_image(bingo_sheet, box_size=100, text_size=None, line_spacing=10, box_spacing=10, wdc=False):
     n = len(bingo_sheet)
     sheet_image_width = sheet_image_height = n * box_size + (n - 1) * box_spacing
     sheet_image = Image.new('RGB', (sheet_image_width, sheet_image_height), 'white')
@@ -54,7 +54,10 @@ def create_bingo_image(bingo_sheet, box_size=100, text_size=None, line_spacing=1
             
             # If the event is in the center, use a different image
             if i == n // 2 and j == n // 2:
-                event_image = adjust_event_image(f'event_images/lights.jpeg', box_size)
+                if wdc:
+                    event_image = adjust_event_image(f'event_images/wdc.jpeg', box_size)
+                else:
+                    event_image = adjust_event_image(f'event_images/lights.jpeg', box_size)
             else:
                 draw = ImageDraw.Draw(event_image)
 
@@ -84,16 +87,21 @@ if __name__ == "__main__":
     argparser = argparse.ArgumentParser()
     argparser.add_argument('-n', "--name", help="bingo sheet name")
     argparser.add_argument('-s', "--size", help="bingo sheet size (s x s)", type=int, default=5)
+    argparser.add_argument("--wdc", help="bingo for max races wins", action="store_true")
     args = argparser.parse_args()
 
     # Load the bingo events from a text file
-    with open('events.txt', 'r') as f:
+    if args.wdc:
+        filename = 'races.txt'
+    else:
+        filename = 'events.txt'
+    with open(filename, 'r') as f:
         bingo_events = f.read().splitlines()
         bingo_events = [event.title() for event in bingo_events]
 
     # Generate the bingo sheet and create the bingo image
     bingo_sheet = generate_bingo_sheet(args.size, bingo_events)
-    bingo_image = create_bingo_image(bingo_sheet, box_size=500, text_size=80, box_spacing=30)  # Specify the desired text size here
+    bingo_image = create_bingo_image(bingo_sheet, box_size=500, text_size=80, box_spacing=30, wdc=args.wdc)  # Specify the desired text size here
 
     # Save the bingo image
     bingo_image.save(f'bingo_sheets/bingo_{args.name}.png')
