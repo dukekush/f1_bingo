@@ -4,11 +4,13 @@ import argparse
 
 
 def generate_bingo_sheet(n, bingo_events):
-    if len(bingo_events) < n**2:
+    if len(bingo_events) < n**2 - 1:
         sheet_events = random.choices(bingo_events, k=n**2)
     else:
-        sheet_events = random.sample(bingo_events, k=n**2)
+        sheet_events = random.sample(bingo_events, k=n**2 - 1)
     
+    if n % 2 != 0:
+        sheet_events.insert(n**2 // 2, f"Free Middle Space")
     bingo_sheet = [sheet_events[i:i+n] for i in range(0, n**2, n)]
     
     return bingo_sheet
